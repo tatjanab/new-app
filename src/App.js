@@ -22,14 +22,23 @@ class App extends Component {
     this.state = {
       itemList: itemList
     };
-  };
+  }
+
+  addItem = () => {
+    this.setState((previousState, currentProps) => {
+      const listItem = previousState.listItem;
+      listItem.push({title:title});
+      return {
+        listItem: listItem
+      }
+    });
+  }
 
   handleItem = (item, index) => () => {
-    console.log(item);
     if (item.checked === false) {
       this.setState ((previousState, currentProps) =>{
         let newItem = previousState.itemList.map ((updatedItem, updatedIndex) => {
-          if (updatedItem === index) {
+          if (updatedIndex === index) {
             updatedItem.checked = true;
           }
           return updatedItem
@@ -47,17 +56,22 @@ class App extends Component {
   render() {
     return (
       <div>
-      {
-        this.state.itemList.map((item, index) => { 
-          console.log(item);
-          return (
-            <div key={'itemList_${index}'}>
-              <h5>{item.title}</h5>
-              <input type='checkbox' onClick={this.handleItem(item,index)} />
-            </div>
-          );
-        })
-      }
+        <form onSubmit={this.addItem}>
+          <input type='text' value={itemList.title} />
+          <button type='submit'>Add</button>
+        </form>
+        {
+          this.state.itemList.map((item, index) => { 
+            console.log(item);
+            return (
+              <div key={'itemList_${index}'}>
+                <h5>{item.title}</h5>
+                <input type='checkbox' checked={item.checked} onChange={this.handleItem(item,index)} />
+                <span>Delete item</span>
+              </div>
+            );
+          })
+        }
       </div>
     )
   }
