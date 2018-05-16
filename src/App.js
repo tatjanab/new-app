@@ -20,16 +20,23 @@ class App extends Component {
   constructor () {
     super();
     this.state = {
-      itemList: itemList
+      itemList: itemList,
+      value: ''
     };
   }
 
-  addItem = () => {
+  handleChange = (event) => {
+    this.setState({value: event.target.value});
+  }
+
+  addItem = (event) => {
+    event.preventDefault();
+    const title = this.state.value;
     this.setState((previousState, currentProps) => {
-      const listItem = previousState.listItem;
-      listItem.push({title:title});
+      const itemList = previousState.itemList;
+      itemList.push({title:title});
       return {
-        listItem: listItem
+        itemList: itemList
       }
     });
   }
@@ -52,22 +59,40 @@ class App extends Component {
     }
   }
 
+  deleteItemHandler = (itemIndex) => {
+    const itemList = [...this.state.itemList];
+    itemList.splice(itemIndex, 1);
+    this.setState({itemList:itemList})
+  }
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.addItem}>
-          <input type='text' value={itemList.title} />
-          <button type='submit'>Add</button>
+      <div className="main-container">
+        <h3 className="list-title">Item List</h3>
+        <form className="main-form" 
+              onSubmit={this.addItem}>
+          <input type='text' 
+                 placeholder='Enter task name'
+                 className="form-input"
+                 value={this.state.value} 
+                 onChange={this.handleChange} />
+          <button type='submit'
+                  className="form-button">
+          Add</button>
         </form>
         {
           this.state.itemList.map((item, index) => { 
-            console.log(item);
             return (
-              <div key={'itemList_${index}'}>
-                <h5>{item.title}</h5>
-                <input type='checkbox' checked={item.checked} onChange={this.handleItem(item,index)} />
-                <span>Delete item</span>
+              <div className="list">
+                <div className="list-item"
+                     key={`itemList_${index}`}>
+                  <h5 className="item-title">{item.title}</h5>
+                  <input type='checkbox' 
+                         checked={item.checked} 
+                         onChange={this.handleItem(item,index)} />
+                  <button className="item-delete"
+                          onClick={()=> this.deleteItemHandler(index)}>delete</button>
+                </div>
               </div>
             );
           })
