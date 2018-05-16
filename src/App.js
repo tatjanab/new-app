@@ -59,10 +59,14 @@ class App extends Component {
     }
   }
 
-  deleteItemHandler = (itemIndex) => {
-    const itemList = [...this.state.itemList];
-    itemList.splice(itemIndex, 1);
-    this.setState({itemList:itemList})
+  deleteItemHandler = (index) => {
+    this.setState((previousState, currentProps) => {
+      const itemList = previousState.itemList;
+      itemList.splice(index, 1);
+      return {
+        itemList: itemList
+      }
+    });
   }
 
   render() {
